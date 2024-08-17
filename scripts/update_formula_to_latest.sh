@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Change directory to the root of the repository
+cd "$(git rev-parse --show-toplevel)"
+
 # Updates the URL and SHA256 checksum of the latest release of the git-recon Homebrew formula.
 # Currently supports only the `git-recon` formula, but could be made generic to support multiple formulas.
 
