@@ -6,13 +6,26 @@ cd "$(git rev-parse --show-toplevel)"
 # Updates the URL and SHA256 checksum of the latest release of the git-recon Homebrew formula.
 # Currently supports only the `git-recon` formula, but could be made generic to support multiple formulas.
 
+# Safely clean up the temporary directory after the tests
+cleanup_temp_dir() {
+  if [[ "$TEMP_DIR" == /tmp/* || "$TEMP_DIR" == /var/folders/* ]]; then
+    rm -rf "$TEMP_DIR"
+  else
+    echo "Warning: Skipping cleanup of unexpected temporary directory $TEMP_DIR"
+  fi
+}
+
 # Variables
 REPO="williamthorsen/git-recon"
 FORMULA_PATH="Formula/git-recon.rb"
 API_URL="https://api.github.com/repos/$REPO/releases/latest"
-TARBALL_URL=$(curl -s $API_URL | grep "tarball_url" | cut -d '"' -f 4)
-LATEST_VERSION=$(echo $TARBALL_URL | grep -oP "(?<=/archive/)(v[0-9.]+)(?=\.tar\.gz)")
-TARBALL_FILE="$LATEST_VERSION.tar.gz"
+RELEASE_DATA=$(curl -s $API_URL)
+LATEST_VERSION=$(echo "$RELEASE_DATA" | jq -r '.tag_name')
+TARBALL_URL="https://github.com/$REPO/archive/refs/tags/$LATEST_VERSION.tar.gz"
+
+# Create a temporary directory for the download
+TEMP_DIR=$(mktemp -d)
+TARBALL_FILE="$TEMP_DIR/$LATEST_VERSION.tar.gz"
 
 # Download the tarball
 curl -L -o $TARBALL_FILE $TARBALL_URL
@@ -20,11 +33,10 @@ curl -L -o $TARBALL_FILE $TARBALL_URL
 # Compute the SHA256 checksum
 SHA256=$(shasum -a 256 $TARBALL_FILE | awk '{ print $1 }')
 
-# Update the Formula
+# Update the Formula with the correct URL and SHA256
 sed -i "" "s|^  url \".*\"|  url \"$TARBALL_URL\"|" $FORMULA_PATH
 sed -i "" "s|^  sha256 \".*\"|  sha256 \"$SHA256\"|" $FORMULA_PATH
 
-# Clean up
-rm $TARBALL_FILE
+cleanup_temp_dir
 
 echo "Formula updated with URL: $TARBALL_URL and SHA256: $SHA256"
