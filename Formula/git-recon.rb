@@ -1,9 +1,9 @@
 class GitRecon < Formula
   desc "Git-Recon custom Git configuration"
   homepage "https://github.com/williamthorsen/git-recon"
-  url "https://github.com/williamthorsen/git-recon/archive/refs/tags/v0.8.0.tar.gz"
-  sha256 "5c2169b69ddf2735d84be8c6ef4d4cf4b8290382b00efc67ddb0f66a2e2e6677"
-  version "0.8.0"
+  url "https://github.com/williamthorsen/git-recon/archive/refs/tags/v0.8.1.tar.gz"
+  sha256 "a45d30f4767e74cc8c8c3634e7e2f4b6a81a5cdb4e455e8dbb2fbb5597459311"
+  version "0.8.1"
 
   def install
     (etc/"gitconfig.d").install "git/git-recon.gitconfig"
