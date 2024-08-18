@@ -7,7 +7,7 @@ This repository contains Homebrew formulae for various tools and utilities maint
 To use these formulae, first tap this repository:
 
 ```bash
-brew tap williamthorsen/homebrew-tap
+brew tap williamthorsen/tap
 ```
 
 Then install the desired package using the `brew install` command with the name of the formula:
