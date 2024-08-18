@@ -1,5 +1,7 @@
-// Import necessary modules from Deno
 import { join } from 'https://deno.land/std@0.190.0/path/mod.ts';
+
+import { updateFormula } from './lib/updateFormula.ts';
+import { removeTempDir } from './lib/removeTempDir.ts';
 
 // Change directory to the root of the repository
 const repoRootProcess = new Deno.Command('git', {
@@ -9,15 +11,6 @@ const repoRootProcess = new Deno.Command('git', {
 const repoRoot = await repoRootProcess;
 const repoPath = new TextDecoder().decode(repoRoot.stdout).trim();
 Deno.chdir(repoPath);
-
-// Safely clean up the temporary directory after the tests
-async function cleanupTempDir(tempDir: string) {
-  if (tempDir.startsWith('/tmp/') || tempDir.startsWith('/var/folders/')) {
-    await Deno.remove(tempDir, { recursive: true });
-  } else {
-    console.warn(`Warning: Skipping cleanup of unexpected temporary directory ${tempDir}`);
-  }
-}
 
 // Variables
 const REPO = 'williamthorsen/git-recon';
@@ -47,33 +40,14 @@ const sha256Process = new Deno.Command('shasum', {
 const sha256Output = await sha256Process;
 const sha256 = new TextDecoder().decode(sha256Output.stdout).split(' ')[0];
 
-// Function to update the formula file
-async function updateFormula() {
-  let formulaContent = await Deno.readTextFile(FORMULA_PATH);
+await updateFormula({
+  formulaPath: FORMULA_PATH,
+  tarballUrl,
+  sha256,
+  latestVersion,
+});
 
-  formulaContent = formulaContent.replace(
-    /^(\s{2})url\s+".*"/m,
-    `$1url "${tarballUrl}"`,
-  );
-
-  formulaContent = formulaContent.replace(
-    /^(\s{2})sha256\s+".*"/m,
-    `$1sha256 "${sha256}"`,
-  );
-
-  formulaContent = formulaContent.replace(
-    /^(\s{2})version\s+".*"/m,
-    `$1version "${latestVersion}"`,
-  );
-
-  await Deno.writeTextFile(FORMULA_PATH, formulaContent);
-}
-
-// Update the formula
-await updateFormula();
-
-// Cleanup the temporary directory
-await cleanupTempDir(tempDir);
+await removeTempDir(tempDir);
 
 console.log(
   `Formula updated with version: ${latestVersion}, URL: ${tarballUrl}, and SHA256: ${sha256}`,
