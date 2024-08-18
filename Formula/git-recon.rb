@@ -1,9 +1,9 @@
 class GitRecon < Formula
   desc "Git-Recon custom Git configuration"
   homepage "https://github.com/williamthorsen/git-recon"
-  url "https://github.com/williamthorsen/git-recon/archive/refs/tags/v0.8.1.tar.gz"
-  sha256 "a45d30f4767e74cc8c8c3634e7e2f4b6a81a5cdb4e455e8dbb2fbb5597459311"
-  version "0.8.1"
+  url "https://github.com/williamthorsen/git-recon/archive/refs/tags/v0.8.2.tar.gz"
+  sha256 "f4b39c81b7b66b2c5efab55bf70cb7b2402a781554c76a5250bc0dbfd3ffcb98"
+  version "0.8.2"
 
   def install
     (etc/"gitconfig.d").install "git/git-recon.gitconfig"
@@ -12,8 +12,12 @@ class GitRecon < Formula
 
   def caveats
     <<~EOS
-      Git-Recon uses custom aliases, which are defined in a "git-recon.gitconfig" file.
+      ==> Important Caveats
+
+      Git-Recon uses custom aliases, which are defined in a single file, "git-recon.gitconfig".
+
       To include this file in your ~/.gitconfig, run the following command:
+
         git-recon --install
     EOS
   end
