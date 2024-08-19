@@ -1,9 +1,9 @@
 class GitRecon < Formula
   desc "Git-Recon custom Git configuration"
   homepage "https://github.com/williamthorsen/git-recon"
-  url "https://github.com/williamthorsen/git-recon/archive/refs/tags/v0.9.0.tar.gz"
-  sha256 "0e78271a2df55e7b8d4ae039d3341f4362dc2a010e47ed1786db04cffae3788d"
-  version "0.9.0"
+  url "https://github.com/williamthorsen/git-recon/archive/refs/tags/v0.10.0.tar.gz"
+  sha256 "3a8ff48477622218df130ddff4715057f38cf5e3ac2de4c1722d1f008743d957"
+  version "0.10.0"
 
   def install
     # Install the configuration file in a shared directory
